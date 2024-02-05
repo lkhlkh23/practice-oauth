@@ -18,20 +18,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(final HttpSecurity http) throws Exception {
 		http
 			.csrf().disable()
-			.headers().frameOptions().disable()
-			.and()
-				.authorizeRequests()
-				.antMatchers("/", "/css/**", "/js/**", "/img/**", "/view/**").permitAll()
-				.antMatchers("/api/v1/**").hasRole(UserRoleType.NORMAL.getRole())
-				.anyRequest().authenticated()
-			.and()
-				.logout()
-					.logoutSuccessUrl("/view/home")
-			.and()
-				.oauth2Login()
-					.defaultSuccessUrl("/view/home")
-					.userInfoEndpoint()
-				.userService(oauthService);
+			.headers().frameOptions().disable();
 	}
 
 }
