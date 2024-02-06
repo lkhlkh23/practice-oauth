@@ -1,27 +1,28 @@
 package practice.oauth.controller.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class GoogleLoginResponseV1 {
 
-	@JsonProperty("access_token")
+	private String email;
 	private String accessToken;
+	private String refreshToken;
+	private boolean isRegistered;
 
-	@JsonProperty("expires_in")
-	private String expiresIn;
-
-	@JsonProperty("scope")
-	private String scope;
-
-	@JsonProperty("token_type")
-	private String tokenType;
-
-	@JsonProperty("id_token")
-	private String idToken;
+	public static GoogleLoginResponseV1 of(final String email) {
+		return GoogleLoginResponseV1.builder()
+									.email(email)
+									.isRegistered(false)
+									.build();
+	}
 
 }

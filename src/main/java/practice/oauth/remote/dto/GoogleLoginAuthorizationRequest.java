@@ -1,4 +1,4 @@
-package practice.oauth.controller.dto;
+package practice.oauth.remote.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GoogleLoginRequest {
+public class GoogleLoginAuthorizationRequest {
 
 	private String clientId;
 	private String redirectUri;

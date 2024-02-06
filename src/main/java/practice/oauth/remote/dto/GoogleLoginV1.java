@@ -1,4 +1,4 @@
-package practice.oauth.controller.dto;
+package practice.oauth.remote.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import lombok.Getter;
-import practice.oauth.controller.dto.GoogleLoginRequest;
+import practice.oauth.remote.dto.GoogleLoginAuthorizationRequest;
 
 @Component
 @Getter
@@ -48,14 +48,14 @@ public class GoogleConfig {
 		return String.format("%s/o/oauth2/v2/auth?%s", loginUrl, query);
 	}
 
-	public GoogleLoginRequest of(final String authCode) {
-		return GoogleLoginRequest.builder()
-							     .clientId(clientId)
-							     .clientSecret(clientSecret)
-							     .code(authCode)
-							     .redirectUri(redirectUrl)
-							     .grantType("authorization_code")
-							     .build();
+	public GoogleLoginAuthorizationRequest of(final String authCode) {
+		return GoogleLoginAuthorizationRequest.builder()
+											  .clientId(clientId)
+											  .clientSecret(clientSecret)
+											  .code(authCode)
+											  .redirectUri(redirectUrl)
+											  .grantType("authorization_code")
+											  .build();
 	}
 
 }

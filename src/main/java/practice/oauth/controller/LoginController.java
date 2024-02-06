@@ -2,28 +2,18 @@ package practice.oauth.controller;
 
 import java.net.URI;
 
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import practice.oauth.config.GoogleConfig;
-import practice.oauth.controller.dto.GoogleLoginRequest;
 import practice.oauth.controller.dto.GoogleLoginResponseV1;
-import practice.oauth.controller.dto.GoogleLoginV1;
+import practice.oauth.service.GoogleLoginService;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,6 +21,7 @@ import practice.oauth.controller.dto.GoogleLoginV1;
 public class LoginController {
 
 	private final GoogleConfig googleConfig;
+	private final GoogleLoginService googleLoginService;
 
 	@GetMapping("/login")
 	public ResponseEntity moveGoogleLogin() {
@@ -49,27 +40,17 @@ public class LoginController {
 	}
 
 	@GetMapping(value = "/login/oauth2/code/google")
-	public ResponseEntity redirectGoogleLogin(@RequestParam(value = "code", required = false, defaultValue = "") final String authCode) {
-		final RestTemplate restTemplate = new RestTemplate();
-
-		try {
-			final GoogleLoginRequest requestParams = googleConfig.of(authCode);
-			final HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON);
-
-			final String loginUrl = googleConfig.getAuthUrl() + "/token";
-			final ResponseEntity<GoogleLoginResponseV1> loginResponse = restTemplate.postForEntity(loginUrl, new HttpEntity<>(requestParams, headers), GoogleLoginResponseV1.class);
-			final GoogleLoginResponseV1 googleLoginResponse = loginResponse.getBody();
-
-			final String jwtToken = googleLoginResponse.getIdToken();
-			final String requestUrl = UriComponentsBuilder.fromHttpUrl(googleConfig.getAuthUrl() + "/tokeninfo").queryParam("id_token", jwtToken).toUriString();
-			final GoogleLoginV1 userInfoDto = restTemplate.getForObject(requestUrl, GoogleLoginV1.class);
-			return ResponseEntity.ok().body(userInfoDto);
-		}
-		catch (Exception e) {
-			e.printStackTrace();
+	public GoogleLoginResponseV1 redirectGoogleLogin(@RequestParam(value = "code", required = false, defaultValue = "") final String authCode) {
+		final String email = googleLoginService.getSocialEmail(authCode);
+		if(!googleLoginService.isRegistered(email)) {
+			return GoogleLoginResponseV1.of(email);
 		}
 
-		return ResponseEntity.ok().build();
+		return GoogleLoginResponseV1.builder()
+									.email(email)
+									.accessToken("TODO : accessToken 생성")
+									.refreshToken("TODO : refreshToken 생성")
+									.isRegistered(true)
+									.build();
 	}
 }
