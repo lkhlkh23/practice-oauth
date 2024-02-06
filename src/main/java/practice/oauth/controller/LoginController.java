@@ -1,6 +1,7 @@
 package practice.oauth.controller;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -24,19 +25,11 @@ public class LoginController {
 	private final GoogleLoginService googleLoginService;
 
 	@GetMapping("/login")
-	public ResponseEntity moveGoogleLogin() {
-		log.info("login click!");
-		final String authUrl = googleConfig.getUrl();
-		try {
-			final HttpHeaders httpHeaders = new HttpHeaders();
-			httpHeaders.setLocation(new URI(authUrl));
+	public ResponseEntity moveGoogleLogin() throws URISyntaxException {
+		final HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.setLocation(new URI(googleConfig.getUrl()));
 
-			return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return ResponseEntity.badRequest().build();
+		return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
 	}
 
 	@GetMapping(value = "/login/oauth2/code/google")

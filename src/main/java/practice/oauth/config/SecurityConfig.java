@@ -17,15 +17,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(final HttpSecurity http) throws Exception {
 		http.cors().configurationSource(corsConfigurationSource());
-		http.csrf().disable()
-			.headers().frameOptions().disable();
+		http.csrf().disable();
 	}
 
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
-		CorsConfiguration configuration = new CorsConfiguration();
-
-		configuration.addAllowedOrigin("*");
+		final CorsConfiguration configuration = new CorsConfiguration();
+		configuration.addAllowedOriginPattern("*"); /
 		configuration.addAllowedHeader("*");
 		configuration.addAllowedMethod("*");
 		configuration.setAllowCredentials(true);
