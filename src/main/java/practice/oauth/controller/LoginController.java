@@ -33,17 +33,17 @@ public class LoginController {
 	}
 
 	@GetMapping(value = "/login/oauth2/code/google")
-	public GoogleLoginResponseV1 redirectGoogleLogin(@RequestParam(value = "code", required = false, defaultValue = "") final String authCode) {
+	public ResponseEntity googleLoginCallback(@RequestParam(value = "code", required = false, defaultValue = "") final String authCode) throws
+		URISyntaxException {
 		final String email = googleLoginService.getSocialEmail(authCode);
+		final HttpHeaders headers = new HttpHeaders();
 		if(!googleLoginService.isRegistered(email)) {
-			return GoogleLoginResponseV1.of(email);
+			headers.setLocation(new URI("http://localhost:8081/view/signup?email=" + email));
+			return new ResponseEntity<>(headers, HttpStatus.FOUND);
 		}
 
-		return GoogleLoginResponseV1.builder()
-									.email(email)
-									.accessToken("TODO : accessToken 생성")
-									.refreshToken("TODO : refreshToken 생성")
-									.isRegistered(true)
-									.build();
+		headers.setLocation(new URI("http://localhost:8081/view/home?email=" + email));
+		return new ResponseEntity<>(headers, HttpStatus.FOUND);
 	}
+
 }
