@@ -11,7 +11,6 @@ import lombok.Getter;
 import practice.oauth.remote.dto.GoogleLoginAuthorizationRequest;
 
 @Component
-@Getter
 public class GoogleConfig {
 
 	@Value("${spring.security.oauth2.client.registration.google.client-id}")
@@ -28,9 +27,6 @@ public class GoogleConfig {
 
 	@Value("${spring.security.oauth2.client.registration.google.login-url}")
 	private String loginUrl;
-
-	@Value("${spring.security.oauth2.client.registration.google.auth-url}")
-	private String authUrl;
 
 	public String getUrl() {
 		final Map<String, Object> parameters = new HashMap<>() {{
