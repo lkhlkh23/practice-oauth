@@ -5,7 +5,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,19 +23,21 @@ import practice.oauth.controller.dto.GeneralLoginRequestV1;
 public class LoginController {
 
 	@Autowired
-	@Qualifier("authenticationManagerBean")
-	private AuthenticationManager authenticationManager;
+	@Qualifier("customAuthenticationProvider")
+	private DaoAuthenticationProvider customAuthenticationProvider;
 
 	@PostMapping("/login")
 	public ResponseEntity generalLogin(@RequestBody final GeneralLoginRequestV1 request) {
 		final UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(request.getId(),
 																								  request.getPassword());
 		try {
-			final Authentication authentication = authenticationManager.authenticate(token);
+			final Authentication authentication = customAuthenticationProvider.authenticate(token);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+
+		log.info("성공");
 
 		return new ResponseEntity(HttpStatus.OK);
 	}

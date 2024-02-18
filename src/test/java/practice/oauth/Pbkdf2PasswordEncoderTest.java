@@ -4,13 +4,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
 
-@SpringBootTest(classes = Pbkdf2PasswordEncoder.class)
+@SpringBootTest
 public class Pbkdf2PasswordEncoderTest {
 
 	@Autowired
+	@Qualifier("customPasswordEncoder")
 	private Pbkdf2PasswordEncoder sut;
 
 	@Test
@@ -23,5 +26,10 @@ public class Pbkdf2PasswordEncoderTest {
 
 		// then
 		assertFalse("".equals(result));
+	}
+
+	@Test
+	void name() {
+		System.out.println(sut.encode("LEEKIHYUN"));
 	}
 }
